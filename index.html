@@ -262,20 +262,11 @@ h2{font-size:clamp(26px,6.6vw,38px);font-weight:700;line-height:1.08;letter-spac
     );
   }
 
+  // La pantalla de cita reservada vive en gracias.html (también es la redirección configurada en el calendario).
   function renderDone(){
     track('ExpoHostCitaAgendada', { calificacion: calificacion() });
-    swap(
-      '<div class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>' +
-      '<h1>Tu cita está <span class="hl">reservada</span></h1>' +
-      '<p class="lead">Te acabamos de enviar la confirmación. Esto es lo que haremos en tus 30 minutos:</p>' +
-      '<ul class="list">' +
-        '<li><b>01</b><span>Revisamos tu situación: capital disponible, lo que ya tienes y lo que buscas.</span></li>' +
-        '<li><b>02</b><span>Te enseñamos cómo funciona la financiación para compradores extranjeros en Estados Unidos.</span></li>' +
-        '<li><b>03</b><span>Sales con un plan concreto para avanzar después del evento.</span></li>' +
-      '</ul>' +
-      '<p class="note">Nos vemos en el stand de PMG Miami. Si no puedes asistir, reprograma desde el enlace de tu confirmación para liberar el hueco.</p>'
-    );
     try { sessionStorage.removeItem(STORE); } catch(e) {}
+    window.location.href = 'gracias.html';
   }
 
   // El widget de HighLevel avisa a la página cuando la reserva se completa.
