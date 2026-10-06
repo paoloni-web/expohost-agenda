@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Reserva tu cita en el stand · ExpoHost Bogotá</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<style>
+/* Mismo lenguaje que el deck de ExpoHost: negro y blanco, un único acento champán, Inter. Pensado primero para móvil (se llega por QR). */
+:root{
+  color-scheme:dark;
+  --black:#0A0A0A; --white:#FAFAF8; --soft:#CFCDC8; --mute:#93918C; --line:#2C2C2C; --card:#141414;
+  --champagne:#C9AE78; --champagne-deep:#8C6D2F;
+  --font:'Inter',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{background:var(--black);color:var(--white);font-family:var(--font);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+.bg{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--black)}
+.bg img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.15);opacity:.22}
+.bg::after{content:"";position:absolute;inset:0;background:radial-gradient(900px 600px at 100% 0%,rgba(201,174,120,.16),transparent 60%),linear-gradient(180deg,rgba(10,10,10,.55) 0%,rgba(10,10,10,.94) 62%,#0A0A0A 100%)}
+
+.app{min-height:100vh;min-height:100dvh;display:flex;flex-direction:column;align-items:center;padding:22px 16px calc(28px + env(safe-area-inset-bottom))}
+.brand{height:46px;width:auto;margin:2px 0 18px}
+.wrap{width:100%;max-width:640px;display:flex;flex-direction:column;flex:1}
+.wrap.wide{max-width:920px}
+
+/* ---------- progreso ---------- */
+.prog{display:none;margin-bottom:22px}
+.prog.on{display:block}
+.prog-top{display:flex;justify-content:space-between;align-items:baseline;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--mute);margin-bottom:10px}
+.prog-top b{color:var(--champagne);font-weight:600;font-variant-numeric:tabular-nums}
+.bar{height:3px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--champagne-deep),var(--champagne));transition:width .5s cubic-bezier(.2,.8,.2,1)}
+
+/* ---------- tarjeta / pasos ---------- */
+.step{display:flex;flex-direction:column;gap:18px;transition:opacity .28s ease,transform .28s ease}
+.step.out{opacity:0;transform:translateY(-10px)}
+.step.in{opacity:0;transform:translateY(14px)}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font-size:11.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--champagne);white-space:nowrap}
+.eyebrow::before{content:"";width:24px;height:1px;background:var(--champagne)}
+h1,h2,p{margin:0}
+h1{font-size:clamp(34px,9.2vw,58px);font-weight:700;line-height:1.02;letter-spacing:-.04em;text-wrap:balance}
+h2{font-size:clamp(26px,6.6vw,38px);font-weight:700;line-height:1.08;letter-spacing:-.035em;text-wrap:balance}
+.hl{color:var(--champagne)}
+.lead{font-size:clamp(16px,4.3vw,19px);line-height:1.5;color:var(--soft);text-wrap:pretty}
+.lead strong{color:var(--white);font-weight:600}
+.sub{font-size:15px;line-height:1.5;color:var(--mute)}
+
+.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-top:4px}
+.facts div{background:rgba(20,20,20,.86);padding:14px 10px;text-align:center}
+.facts b{display:block;font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--white)}
+.facts span{display:block;margin-top:3px;font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--mute)}
+
+.btn{appearance:none;border:0;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:19px 22px;border-radius:4px;background:linear-gradient(135deg,#DCC694 0%,#B8975A 100%);color:var(--black);font-size:17px;font-weight:700;letter-spacing:-.01em;transition:transform .15s ease,filter .15s ease}
+.btn:hover{filter:brightness(1.06)}
+.btn:active{transform:scale(.985)}
+.btn .arr{transition:transform .2s ease}
+.btn:hover .arr{transform:translateX(4px)}
+
+.opts{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.opt{appearance:none;cursor:pointer;font-family:inherit;text-align:left;display:flex;align-items:center;gap:14px;width:100%;padding:17px 18px;border-radius:4px;border:1px solid var(--line);background:rgba(20,20,20,.86);color:var(--white);font-size:16.5px;font-weight:500;line-height:1.3;transition:border-color .15s ease,background .15s ease,transform .15s ease}
+.opt .k{flex:none;width:26px;height:26px;border-radius:50%;border:1px solid #4A4A4A;display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--mute);transition:all .15s ease}
+.opt:hover{border-color:#5A5A5A}
+.opt:active{transform:scale(.99)}
+.opt.sel{border-color:var(--champagne);background:rgba(201,174,120,.12)}
+.opt.sel .k{background:var(--champagne);border-color:var(--champagne);color:var(--black)}
+.btn:focus-visible,.opt:focus-visible,.back:focus-visible{outline:2px solid var(--champagne);outline-offset:3px}
+
+.back{appearance:none;background:none;border:0;cursor:pointer;font-family:inherit;align-self:flex-start;padding:8px 4px;margin-top:2px;font-size:14px;font-weight:500;color:var(--mute)}
+.back:hover{color:var(--white)}
+
+/* ---------- calendario ---------- */
+.cal{background:#fff;border-radius:6px;overflow:hidden;min-height:640px;box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.cal iframe{display:block;width:100%;min-height:640px;border:0}
+.note{font-size:13.5px;line-height:1.5;color:var(--mute);text-align:center}
+
+.check{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#DCC694,#B8975A);display:grid;place-items:center}
+.check svg{width:26px;height:26px;stroke:var(--black);fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.list{list-style:none;margin:4px 0 0;padding:0;border-top:1px solid var(--line)}
+.list li{display:flex;gap:16px;padding:16px 0;border-bottom:1px solid var(--line);font-size:16px;line-height:1.45;color:var(--soft)}
+.list li b{flex:none;width:22px;font-size:13px;font-weight:700;color:var(--champagne);font-variant-numeric:tabular-nums;padding-top:2px}
+
+.foot{margin-top:auto;padding-top:34px;font-size:12px;letter-spacing:.04em;color:#5E5C58;text-align:center}
+
+@media (min-width:720px){
+  .app{padding-top:38px}
+  .brand{height:58px;margin-bottom:34px}
+  .opt{padding:19px 22px;font-size:17.5px}
+  .step{gap:22px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg"><img src="img/skyline.jpg" alt=""></div>
+
+<main class="app">
+  <img class="brand" src="img/logo.png" alt="PMG | Josema Sánchez">
+  <div class="wrap" id="wrap">
+    <div class="prog" id="prog">
+      <div class="prog-top"><span id="progLabel"></span><b id="progPct">0%</b></div>
+      <div class="bar"><i id="progFill"></i></div>
+    </div>
+    <section class="step" id="step" aria-live="polite"></section>
+    <p class="foot">InversorBNB · Josema Sánchez · ExpoHost Bogotá 2026</p>
+  </div>
+</main>
+
+<script>
+(function(){
+  /* ====================== CONFIGURACIÓN ====================== */
+  var CONFIG = {
+    // Calendario de HighLevel que abre directo en fecha y hora (formulario EXPOHOST - QUIZ, con los campos ocultos eq_*).
+    calendarUrl: 'https://api.leadconnectorhq.com/widget/booking/WzcdfSbKzkHve6KdFOop',
+    // Cada respuesta viaja al calendario con esta clave; el formulario del calendario la guarda en su campo personalizado de HighLevel.
+    keys: { perfil:'eq_perfil', objetivo:'eq_objetivo', inversiones:'eq_inversiones', capital:'eq_capital', plazo:'eq_plazo', decisor:'eq_decisor', calificacion:'eq_calificacion' }
+  };
+  /* =========================================================== */
+
+  var QUESTIONS = [
+    { id:'perfil', tag:'Tu situación',
+      title:'¿Cuál describe mejor <span class="hl">tu situación</span> hoy?',
+      options:['Tengo propiedades en Airbnb','Tengo un negocio propio','Soy inversor inmobiliario','Soy empleado o profesional independiente'] },
+    { id:'objetivo', tag:'Tu objetivo',
+      title:'¿Qué buscas al invertir en <span class="hl">Estados Unidos</span>?',
+      options:['Proteger mi patrimonio en dólares','Multiplicar mi capital','Generar ingresos en dólares','Diversificar fuera de mi país'] },
+    { id:'inversiones', tag:'Tu experiencia',
+      title:'¿Ya tienes inversiones <span class="hl">fuera de tu país</span>?',
+      options:['Sí, en Estados Unidos','Sí, en otro país','No, sería la primera'] },
+    { id:'capital', tag:'Tu capital',
+      title:'¿Con cuánto capital cuentas <span class="hl">disponible de inmediato</span> para invertir?',
+      sub:'Solo lo vemos nosotros. Nos sirve para llevar preparados los números de tu caso.',
+      options:['Menos de 50.000 USD','Entre 50.000 y 100.000 USD','Entre 100.000 y 250.000 USD','Más de 250.000 USD'] },
+    { id:'plazo', tag:'Tu momento',
+      title:'Si encaja contigo, ¿cuándo te gustaría <span class="hl">tomar una decisión</span>?',
+      options:['En los próximos 30 días','En 1 a 3 meses','En 3 a 6 meses','Solo me estoy informando'] },
+    { id:'decisor', tag:'La decisión',
+      title:'¿La decisión de invertir la tomas <span class="hl">tú solo</span>?',
+      sub:'Si decides con alguien más, lo ideal es que venga contigo a la cita.',
+      options:['Sí, decido yo','La tomo con mi pareja','La tomo con un socio','La tomo con un familiar'] }
+  ];
+
+  var STORE = 'expohost-quiz';
+  var answers = {};
+  try { answers = JSON.parse(sessionStorage.getItem(STORE) || '{}') || {}; } catch(e) {}
+  function save(){ try { sessionStorage.setItem(STORE, JSON.stringify(answers)); } catch(e) {} }
+
+  var cur = -1;               // -1 intro · 0..n-1 preguntas · n calendario · n+1 confirmación
+  var N = QUESTIONS.length;
+  var wrap = document.getElementById('wrap'), stepEl = document.getElementById('step');
+  var prog = document.getElementById('prog'), progFill = document.getElementById('progFill');
+  var progPct = document.getElementById('progPct'), progLabel = document.getElementById('progLabel');
+
+  function track(name, params){ try { if (typeof window.fbq === 'function') window.fbq('trackCustom', name, params || {}); } catch(e) {} }
+
+  // A: 50.000 USD o más y decide en menos de 3 meses · B: 50.000 USD o más con plazo más largo · C: menos de 50.000 USD
+  function calificacion(){
+    var cap = QUESTIONS[3].options.indexOf(answers.capital), plazo = QUESTIONS[4].options.indexOf(answers.plazo);
+    if (cap < 1) return 'C';
+    return plazo <= 1 ? 'A' : 'B';
+  }
+
+  function swap(html, after){
+    stepEl.classList.add('out');
+    setTimeout(function(){
+      stepEl.innerHTML = html;
+      stepEl.classList.remove('out'); stepEl.classList.add('in');
+      void stepEl.offsetWidth; stepEl.classList.remove('in');
+      window.scrollTo({ top:0, behavior:'smooth' });
+      if (after) after();
+    }, 240);
+  }
+
+  function setProgress(){
+    var onQ = cur >= 0 && cur < N;
+    prog.classList.toggle('on', onQ || cur === N);
+    if (onQ) {
+      var pct = Math.round((cur / N) * 100);
+      progLabel.textContent = 'Paso ' + (cur + 1) + ' de ' + N + ' · ' + QUESTIONS[cur].tag;
+      progPct.textContent = pct + '%'; progFill.style.width = pct + '%';
+    } else if (cur === N) {
+      progLabel.textContent = 'Último paso · Elige tu hora';
+      progPct.textContent = '100%'; progFill.style.width = '100%';
+    }
+  }
+
+  function render(){
+    wrap.classList.toggle('wide', cur === N);
+    setProgress();
+    if (cur < 0) return renderIntro();
+    if (cur < N) return renderQuestion(QUESTIONS[cur]);
+    if (cur === N) return renderCalendar();
+    renderDone();
+  }
+
+  function renderIntro(){
+    swap(
+      '<span class="eyebrow">ExpoHost Bogotá · 6 y 7 de octubre</span>' +
+      '<h1>Reserva tu cita en el stand con <span class="hl">Josema Sánchez</span></h1>' +
+      '<p class="lead">Responde <strong>6 preguntas rápidas</strong> (menos de un minuto) y llegaremos a tu cita con <strong>los números de tu caso preparados</strong> para invertir en Miami.</p>' +
+      '<div class="facts"><div><b>30 min</b><span>Cara a cara</span></div><div><b>Stand PMG</b><span>Miami</span></div><div><b>Sin coste</b><span>Ni compromiso</span></div></div>' +
+      '<button class="btn" id="start" type="button">Empezar <span class="arr">&rarr;</span></button>',
+      function(){ document.getElementById('start').onclick = function(){ track('ExpoHostQuizInicio'); cur = 0; render(); }; }
+    );
+  }
+
+  function renderQuestion(q){
+    var html = '<h2>' + q.title + '</h2>' + (q.sub ? '<p class="sub">' + q.sub + '</p>' : '') + '<div class="opts">';
+    q.options.forEach(function(o, i){
+      html += '<button type="button" class="opt' + (answers[q.id] === o ? ' sel' : '') + '" data-i="' + i + '"><span class="k">' + String.fromCharCode(65 + i) + '</span><span>' + o + '</span></button>';
+    });
+    html += '</div><button type="button" class="back" id="back">&larr; Atrás</button>';
+    swap(html, function(){
+      var locked = false;
+      Array.prototype.forEach.call(stepEl.querySelectorAll('.opt'), function(b){
+        b.onclick = function(){
+          if (locked) return; locked = true;
+          Array.prototype.forEach.call(stepEl.querySelectorAll('.opt'), function(x){ x.classList.remove('sel'); });
+          b.classList.add('sel');
+          answers[q.id] = q.options[+b.getAttribute('data-i')]; save();
+          setTimeout(function(){ cur++; render(); }, 260);
+        };
+      });
+      document.getElementById('back').onclick = function(){ cur--; render(); };
+    });
+  }
+
+  function calendarSrc(){
+    var p = [];
+    Object.keys(CONFIG.keys).forEach(function(id){
+      var v = id === 'calificacion' ? calificacion() : answers[id];
+      if (v) p.push(encodeURIComponent(CONFIG.keys[id]) + '=' + encodeURIComponent(v));
+    });
+    return CONFIG.calendarUrl + (CONFIG.calendarUrl.indexOf('?') < 0 ? '?' : '&') + p.join('&');
+  }
+
+  function renderCalendar(){
+    track('ExpoHostQuizCompletado', { calificacion: calificacion() });
+    swap(
+      '<span class="eyebrow">Listo</span>' +
+      '<h2>Elige tu <span class="hl">día y hora</span> en el stand</h2>' +
+      '<p class="sub">Al confirmar solo te pediremos tu nombre, email y WhatsApp para enviarte la cita.</p>' +
+      '<div class="cal" id="cal"></div>' +
+      '<p class="note">30 minutos cara a cara en el stand de PMG Miami. Llega 5 minutos antes: la agenda del evento va muy ajustada.</p>' +
+      '<button type="button" class="back" id="back">&larr; Cambiar mis respuestas</button>',
+      function(){
+        var f = document.createElement('iframe');
+        f.id = 'expohost_cal_' + Date.now();
+        f.title = 'Reserva tu cita en el stand';
+        f.setAttribute('scrolling', 'no');
+        f.src = calendarSrc();
+        document.getElementById('cal').appendChild(f);
+        // Script de HighLevel que ajusta la altura del calendario a su contenido.
+        var s = document.createElement('script');
+        s.src = 'https://link.msgsndr.com/js/form_embed.js';
+        document.body.appendChild(s);
+        document.getElementById('back').onclick = function(){ cur = N - 1; render(); };
+      }
+    );
+  }
+
+  function renderDone(){
+    track('ExpoHostCitaAgendada', { calificacion: calificacion() });
+    swap(
+      '<div class="check"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>' +
+      '<h1>Tu cita está <span class="hl">reservada</span></h1>' +
+      '<p class="lead">Te acabamos de enviar la confirmación. Esto es lo que haremos en tus 30 minutos:</p>' +
+      '<ul class="list">' +
+        '<li><b>01</b><span>Revisamos tu situación: capital disponible, lo que ya tienes y lo que buscas.</span></li>' +
+        '<li><b>02</b><span>Te enseñamos cómo funciona la financiación para compradores extranjeros en Estados Unidos.</span></li>' +
+        '<li><b>03</b><span>Sales con un plan concreto para avanzar después del evento.</span></li>' +
+      '</ul>' +
+      '<p class="note">Nos vemos en el stand de PMG Miami. Si no puedes asistir, reprograma desde el enlace de tu confirmación para liberar el hueco.</p>'
+    );
+    try { sessionStorage.removeItem(STORE); } catch(e) {}
+  }
+
+  // El widget de HighLevel avisa a la página cuando la reserva se completa.
+  window.addEventListener('message', function(e){
+    if (cur !== N || !/leadconnectorhq\.com|msgsndr\.com/.test(e.origin || '')) return;
+    var d = e.data, s = typeof d === 'string' ? d : (function(){ try { return JSON.stringify(d); } catch(x) { return ''; } })();
+    if (s.indexOf('msgsndr-booking-complete') > -1) { cur = N + 1; render(); }
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>
